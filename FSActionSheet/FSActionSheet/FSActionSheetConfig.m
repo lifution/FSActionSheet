@@ -14,6 +14,7 @@ CGFloat const FSActionSheetContentMaxScale    = 0.65;   ///< 弹窗内容高度�
 CGFloat const FSActionSheetRowHeight          = 44;     ///< 行高
 CGFloat const FSActionSheetTitleLineSpacing   = 2.5;    ///< 标题行距
 CGFloat const FSActionSheetTitleKernSpacing   = 0.5;    ///< 标题字距
+CGFloat const FSActionSheetItemTitleFontSize  = 16;     ///< 选项文字字体大小, default is 16.
 CGFloat const FSActionSheetItemContentSpacing = 5;      ///< 选项图片和文字的间距
 // color
 NSString * const FSActionSheetTitleColor           = @"#888888"; ///< 标题颜色

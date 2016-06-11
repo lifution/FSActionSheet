@@ -33,6 +33,7 @@ UIKIT_EXTERN CGFloat const FSActionSheetContentMaxScale; ///< 弹窗内容高度
 UIKIT_EXTERN CGFloat const FSActionSheetRowHeight; ///< 行高, default is 44.
 UIKIT_EXTERN CGFloat const FSActionSheetTitleLineSpacing; ///< 标题行距, default is 2.5.
 UIKIT_EXTERN CGFloat const FSActionSheetTitleKernSpacing; ///< 标题字距, default is 0.5.
+UIKIT_EXTERN CGFloat const FSActionSheetItemTitleFontSize; ///< 选项文字字体大小, default is 16.
 UIKIT_EXTERN CGFloat const FSActionSheetItemContentSpacing; ///< 选项图片和文字的间距, default is 5.
 // color
 UIKIT_EXTERN NSString * const FSActionSheetTitleColor; ///< 标题颜色, default is #888888

@@ -46,7 +46,7 @@
 - (void)setupSubviews {
     _titleButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _titleButton.tintColor = FSColorWithString(FSActionSheetItemNormalColor);
-    _titleButton.titleLabel.font = [UIFont systemFontOfSize:16];
+    _titleButton.titleLabel.font = [UIFont systemFontOfSize:FSActionSheetItemTitleFontSize];
     _titleButton.userInteractionEnabled = NO;
     _titleButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_titleButton];
@@ -85,7 +85,6 @@
                                                     _item.image?1:0, _item.image?FSActionSheetItemContentSpacing/2:0);
     _titleButton.titleEdgeInsets = UIEdgeInsetsMake(_item.image?1:0, _item.image?FSActionSheetItemContentSpacing/2:0,
                                                     0, _item.image?-FSActionSheetItemContentSpacing/2:0);
-    
     // 设置图片与标题
     [_titleButton setTitle:item.title forState:UIControlStateNormal];
     [_titleButton setImage:item.image forState:UIControlStateNormal];
@@ -95,6 +94,9 @@
     if (_contentAlignment == contentAlignment) return;
     
     _contentAlignment = contentAlignment;
+    // 更新button的图片和标题Edge
+    [self updateButtonContentEdge];
+    // 设置内容偏移
     switch (_contentAlignment) {
             // 局左
         case FSContentAlignmentLeft: {
@@ -114,6 +116,20 @@
             _titleButton.contentEdgeInsets = UIEdgeInsetsMake(0, -FSActionSheetDefaultMargin, 0, FSActionSheetDefaultMargin);
             break;
         }
+    }
+}
+
+// 更新button图片与标题的edge
+- (void)updateButtonContentEdge {
+    if (!_item.image) return;
+    if (_contentAlignment == FSContentAlignmentRight) {
+        CGFloat titleWidth = [[_titleButton titleForState:UIControlStateNormal] sizeWithAttributes:@{NSFontAttributeName:_titleButton.titleLabel.font}].width;
+        _titleButton.imageEdgeInsets = UIEdgeInsetsMake(0, titleWidth, 1, -titleWidth);
+        _titleButton.titleEdgeInsets = UIEdgeInsetsMake(1, -_item.image.size.width-FSActionSheetItemContentSpacing,
+                                                        0, _item.image.size.width+FSActionSheetItemContentSpacing);
+    } else {
+        _titleButton.imageEdgeInsets = UIEdgeInsetsMake(0, -FSActionSheetItemContentSpacing/2, 1, FSActionSheetItemContentSpacing/2);
+        _titleButton.titleEdgeInsets = UIEdgeInsetsMake(1, FSActionSheetItemContentSpacing/2, 0, -FSActionSheetItemContentSpacing/2);
     }
 }
 

@@ -39,7 +39,7 @@
 
 #pragma mark - delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 7;
+    return 8;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 44;
@@ -63,7 +63,7 @@
             cell.textLabel.text = @"单文本带标题内容偏左";
             break;
         case 3:
-            cell.textLabel.text = @"单文本带标题内容偏右";
+            cell.textLabel.text = @"单文本带标题内容偏右(点击外部半透明层不隐藏)";
             break;
         case 4:
             cell.textLabel.text = @"附带icon居中";
@@ -72,7 +72,10 @@
             cell.textLabel.text = @"附带icon居中带标题";
             break;
         case 6:
-            cell.textLabel.text = @"附带icon内容偏左";
+            cell.textLabel.text = @"附带icon, 内容偏左";
+            break;
+        case 7:
+            cell.textLabel.text = @"附带icon和标题, 内容偏右";
             break;
         default:
             break;
@@ -87,22 +90,25 @@
             [self justText];
             break;
         case 1:
-            [self textWithTitleInCenter];
+            [self textWithTitleAlignmentCenter];
             break;
         case 2:
-            [self textWithTitleInLeft];
+            [self textWithTitleAlignmentLeft];
             break;
         case 3:
-            [self textWithTitleInRight];
+            [self textWithTitleAlignmentRight];
             break;
         case 4:
-            [self textWithIconInCenter];
+            [self textWithIconAlignmentCenter];
             break;
         case 5:
-            [self textWithIconAndTitleInCenter];
+            [self textWithIconAndTitleAlignmentCenter];
             break;
         case 6:
-            [self textWithIconInLeft];
+            [self textWithIconAlignmentLeft];
+            break;
+        case 7:
+            [self textWithIconAlignmentRight];
             break;
         default:
             break;
@@ -126,7 +132,7 @@
 }
 
 // 单文本居中带标题
-- (void)textWithTitleInCenter {
+- (void)textWithTitleAlignmentCenter {
     NSMutableArray *actionSheetItems = [@[FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"拍照"),
                                           FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"从相册选取"),
                                           FSActionSheetTitleItemMake(FSActionSheetTypeHighlighted, @"删除")]
@@ -140,7 +146,7 @@
 }
 
 // 单文本带标题内容偏左
-- (void)textWithTitleInLeft {
+- (void)textWithTitleAlignmentLeft {
     NSMutableArray *actionSheetItems = [@[FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"拍照"),
                                           FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"从相册选取"),
                                           FSActionSheetTitleItemMake(FSActionSheetTypeHighlighted, @"删除")]
@@ -155,13 +161,14 @@
 }
 
 // 单文本带标题内容偏右
-- (void)textWithTitleInRight {
+- (void)textWithTitleAlignmentRight {
     NSMutableArray *actionSheetItems = [@[FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"拍照"),
                                           FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"从相册选取"),
                                           FSActionSheetTitleItemMake(FSActionSheetTypeHighlighted, @"删除")]
                                         mutableCopy];
     FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:_actionSheetTitle cancelTitle:nil items:actionSheetItems];
     actionSheet.contentAlignment = FSContentAlignmentRight;
+    actionSheet.hideOnTouchOutside = NO;
     // 展示并绑定选择回调
     [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
         FSActionSheetItem *item = actionSheetItems[selectedIndex];
@@ -170,7 +177,7 @@
 }
 
 // 附带icon居中
-- (void)textWithIconInCenter {
+- (void)textWithIconAlignmentCenter {
     NSMutableArray *actionSheetItems = [@[FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"camera"], @"拍照"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
@@ -184,7 +191,7 @@
 }
 
 // 附带icon居中带标题
-- (void)textWithIconAndTitleInCenter {
+- (void)textWithIconAndTitleAlignmentCenter {
     NSMutableArray *actionSheetItems = [@[FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"camera"], @"拍照"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
@@ -198,13 +205,28 @@
 }
 
 // 附带icon内容偏左
-- (void)textWithIconInLeft {
+- (void)textWithIconAlignmentLeft {
     NSMutableArray *actionSheetItems = [@[FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"camera"], @"拍照"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
                                         mutableCopy];
     FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:nil cancelTitle:@"关闭" items:actionSheetItems];
     actionSheet.contentAlignment = FSContentAlignmentLeft;
+    // 展示并绑定选择回调
+    [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
+        FSActionSheetItem *item = actionSheetItems[selectedIndex];
+        _label.text = item.title;
+    }];
+}
+
+// 附带icon和标题, 内容偏右
+- (void)textWithIconAlignmentRight {
+    NSMutableArray *actionSheetItems = [@[FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"camera"], @"拍照"),
+                                          FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
+                                          FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
+                                        mutableCopy];
+    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:_actionSheetTitle cancelTitle:@"关闭" items:actionSheetItems];
+    actionSheet.contentAlignment = FSContentAlignmentRight;
     // 展示并绑定选择回调
     [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
         FSActionSheetItem *item = actionSheetItems[selectedIndex];
