@@ -71,18 +71,13 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 // 屏幕旋转通知回调
 - (void)orientationDidChange:(NSNotification *)notification {
     if (_title.length > 0) {
-        // 原headerView高度
-        CGFloat originalHeaderHeight = CGRectGetHeight(self.tableView.tableHeaderView.frame);
-        CGFloat newHeaderHeight = [self heightForHeaderView];
-        
         // 更新头部标题的高度
+        CGFloat newHeaderHeight = [self heightForHeaderView];
         CGRect newHeaderRect = _tableView.tableHeaderView.frame;
         newHeaderRect.size.height = newHeaderHeight;
         _tableView.tableHeaderView.frame = newHeaderRect;
         self.tableView.tableHeaderView = self.tableView.tableHeaderView;
-        
-        _heightConstraint.constant = _heightConstraint.constant-(originalHeaderHeight-newHeaderHeight);
-        
+        // 适配当前内容高度
         [self fixContentHeight];
     }
 }
@@ -117,6 +112,46 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     }
     
     _heightConstraint.constant = contentHeight;
+}
+
+// 适配标题偏移方向
+- (void)updateTitleAttributeText {
+    if (_title.length == 0 || !_titleLabel) return;
+    
+    // 富文本相关配置
+    NSRange  attributeRange = NSMakeRange(0, _title.length);
+    UIFont  *titleFont      = [UIFont systemFontOfSize:14];
+    UIColor *titleTextColor = FSColorWithString(FSActionSheetTitleColor);
+    CGFloat  lineSpacing = FSActionSheetTitleLineSpacing;
+    CGFloat  kernSpacing = FSActionSheetTitleKernSpacing;
+    
+    NSMutableAttributedString *titleAttributeString = [[NSMutableAttributedString alloc] initWithString:_title];
+    NSMutableParagraphStyle *titleStyle = [[NSMutableParagraphStyle alloc] init];
+    // 行距
+    titleStyle.lineSpacing = lineSpacing;
+    // 内容偏移样式
+    switch (_contentAlignment) {
+        case FSContentAlignmentLeft: {
+            titleStyle.alignment = NSTextAlignmentLeft;
+            break;
+        }
+        case FSContentAlignmentCenter: {
+            titleStyle.alignment = NSTextAlignmentCenter;
+            break;
+        }
+        case FSContentAlignmentRight: {
+            titleStyle.alignment = NSTextAlignmentRight;
+            break;
+        }
+    }
+    [titleAttributeString addAttribute:NSParagraphStyleAttributeName value:titleStyle range:attributeRange];
+    // 字距
+    [titleAttributeString addAttribute:NSKernAttributeName value:@(kernSpacing) range:attributeRange];
+    // 字体
+    [titleAttributeString addAttribute:NSFontAttributeName value:titleFont range:attributeRange];
+    // 颜色
+    [titleAttributeString addAttribute:NSForegroundColorAttributeName value:titleTextColor range:attributeRange];
+    _titleLabel.attributedText = titleAttributeString;
 }
 
 // 点击背景半透明遮罩层隐藏
@@ -228,36 +263,17 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     UIView *headerView = [[UIView alloc] init];
     headerView.backgroundColor = FSColorWithString(FSActionSheetRowNormalColor);
     
+    // 标题
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.numberOfLines = 0;
     titleLabel.backgroundColor = headerView.backgroundColor;
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    // 富文本相关配置
-    NSRange  attributeRange = NSMakeRange(0, _title.length);
-    UIFont  *titleFont      = [UIFont systemFontOfSize:14];
-    UIColor *titleTextColor = FSColorWithString(FSActionSheetTitleColor);
-    CGFloat  lineSpacing = FSActionSheetTitleLineSpacing;
-    CGFloat  kernSpacing = FSActionSheetTitleKernSpacing;
-    
-    NSMutableAttributedString *titleAttributeString = [[NSMutableAttributedString alloc] initWithString:_title];
-    NSMutableParagraphStyle *titleStyle = [[NSMutableParagraphStyle alloc] init];
-    // 行距
-    titleStyle.lineSpacing = lineSpacing;
-    // 内容居中
-    titleStyle.alignment = NSTextAlignmentCenter;
-    [titleAttributeString addAttribute:NSParagraphStyleAttributeName value:titleStyle range:attributeRange];
-    // 字距
-    [titleAttributeString addAttribute:NSKernAttributeName value:@(kernSpacing) range:attributeRange];
-    // 字体
-    [titleAttributeString addAttribute:NSFontAttributeName value:titleFont range:attributeRange];
-    // 颜色
-    [titleAttributeString addAttribute:NSForegroundColorAttributeName value:titleTextColor range:attributeRange];
-    titleLabel.attributedText = titleAttributeString;
     [headerView addSubview:titleLabel];
     self.titleLabel = titleLabel;
+    // 设置富文本标题内容
+    [self updateTitleAttributeText];
     
-    // 内容边距
+    // 标题内容边距 (ps: 要修改这个边距不要在这里修改这个labelMargin, 要到配置类中修改 FSActionSheetDefaultMargin, 不然可能出现界面适配错乱).
     CGFloat labelMargin = FSActionSheetDefaultMargin;
     // 计算内容高度
     CGFloat headerHeight = [self heightForHeaderView];
@@ -268,6 +284,14 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     [headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-labelMargin-[titleLabel]" options:0 metrics:@{@"labelMargin":@(labelMargin)} views:NSDictionaryOfVariableBindings(titleLabel)]];
     
     return headerView;
+}
+
+#pragma mark - setter
+- (void)setContentAlignment:(FSContentAlignment)contentAlignment {
+    if (_contentAlignment != contentAlignment) {
+        _contentAlignment = contentAlignment;
+        [self updateTitleAttributeText];
+    }
 }
 
 #pragma mark - delegate
