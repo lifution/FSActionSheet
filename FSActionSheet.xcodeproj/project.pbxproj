@@ -18,6 +18,8 @@
 		B07896011CE321C80052E6A5 /* FSActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = B07895FC1CE321C80052E6A5 /* FSActionSheet.m */; };
 		B07896021CE321C80052E6A5 /* FSActionSheetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B07895FE1CE321C80052E6A5 /* FSActionSheetCell.m */; };
 		B07896031CE321C80052E6A5 /* FSActionSheetItem.m in Sources */ = {isa = PBXBuildFile; fileRef = B07896001CE321C80052E6A5 /* FSActionSheetItem.m */; };
+		B07C5FC71D0C5B6500E2B357 /* background_image@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B07C5FC51D0C5B6500E2B357 /* background_image@2x.jpg */; };
+		B07C5FC81D0C5B6500E2B357 /* background_image@3x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B07C5FC61D0C5B6500E2B357 /* background_image@3x.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		B07895FE1CE321C80052E6A5 /* FSActionSheetCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSActionSheetCell.m; sourceTree = "<group>"; };
 		B07895FF1CE321C80052E6A5 /* FSActionSheetItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSActionSheetItem.h; sourceTree = "<group>"; };
 		B07896001CE321C80052E6A5 /* FSActionSheetItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSActionSheetItem.m; sourceTree = "<group>"; };
+		B07C5FC51D0C5B6500E2B357 /* background_image@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "background_image@2x.jpg"; sourceTree = "<group>"; };
+		B07C5FC61D0C5B6500E2B357 /* background_image@3x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "background_image@3x.jpg"; sourceTree = "<group>"; };
 		B08C3DE31D070CC400A1B33C /* FSActionSheetConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSActionSheetConfig.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +91,8 @@
 				B07895E91CE321870052E6A5 /* ViewController.h */,
 				B07895EA1CE321870052E6A5 /* ViewController.m */,
 				B07895EC1CE321870052E6A5 /* Main.storyboard */,
+				B07C5FC51D0C5B6500E2B357 /* background_image@2x.jpg */,
+				B07C5FC61D0C5B6500E2B357 /* background_image@3x.jpg */,
 				B07895EF1CE321870052E6A5 /* Assets.xcassets */,
 				B07895F41CE321870052E6A5 /* Info.plist */,
 				B07895E31CE321870052E6A5 /* Supporting Files */,
@@ -176,8 +182,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B01BD23C1D083A7700141311 /* FSActionSheet_cancel@2x.png in Resources */,
+				B07C5FC81D0C5B6500E2B357 /* background_image@3x.jpg in Resources */,
 				B07895F01CE321870052E6A5 /* Assets.xcassets in Resources */,
 				B01BD23D1D083A7700141311 /* FSActionSheet_cancel@3x.png in Resources */,
+				B07C5FC71D0C5B6500E2B357 /* background_image@2x.jpg in Resources */,
 				B07895EE1CE321870052E6A5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

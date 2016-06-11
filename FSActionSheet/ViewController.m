@@ -11,6 +11,7 @@
 
 @interface ViewController ()
 
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *label;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -21,6 +22,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    if ([UIScreen mainScreen].scale == 3) {
+        _imageView.image = [UIImage imageNamed:@"background_image@3x.jpg"];
+    } else {
+        _imageView.image = [UIImage imageNamed:@"background_image@2x.jpg"];
+    }
     _tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.tableFooterView = UIView.new;
