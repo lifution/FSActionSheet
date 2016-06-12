@@ -6,12 +6,14 @@
 <P>
 ```Objective-C
 // 类UIActionSheet初始化绑定代理和设置标题:
-FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:@"这是ActionSheet的标题" delegate:nil cancelButtonTitle:@"关闭" highlightedButtonTitle:@"删除" otherButtonTitles:@[@"拍照", @"从相册选取"]];
+FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:@"这是ActionSheet的标题" delegate:self cancelButtonTitle:@"关闭" highlightedButtonTitle:@"删除" otherButtonTitles:@[@"拍照", @"从相册选取"]];
 actionSheet.contentAlignment = FSContentAlignmentLeft;
-// 展示并绑定选择回调
-[actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
-	_label.text = [NSString stringWithFormat:@"选择了第[%zi]项", selectedIndex];
-}];
+// show
+[actionSheet show];
+// FSActionSheetDelegate
+- (void)FSActionSheet:(FSActionSheet *)actionSheet selectedIndex:(NSInteger)selectedIndex {
+    NSLog(@"选择了第[%zi]项", selectedIndex);
+}
 
 // 自己组装item设定为actionSheet的按钮:
 NSMutableArray *actionSheetItems = [@[FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"camera"], @"拍照"),
