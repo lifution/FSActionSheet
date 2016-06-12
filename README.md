@@ -7,11 +7,11 @@
 类UIActionSheet初始化绑定代理和设置标题:<p>
 ```Objective-C
 FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:@"这是ActionSheet的标题" delegate:nil cancelButtonTitle:@"关闭" highlightedButtonTitle:@"删除" otherButtonTitles:@[@"拍照", @"从相册选取"]];
-    actionSheet.contentAlignment = FSContentAlignmentLeft;
-    // 展示并绑定选择回调
-    [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
-        _label.text = [NSString stringWithFormat:@"选择了第[%zi]项", selectedIndex];
-    }];
+actionSheet.contentAlignment = FSContentAlignmentLeft;
+// 展示并绑定选择回调
+[actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
+	_label.text = [NSString stringWithFormat:@"选择了第[%zi]项", selectedIndex];
+	}];
 ```<p>
 自己组装item设定为actionSheet的按钮:<p>
 ```Objective-C
@@ -19,11 +19,10 @@ NSMutableArray *actionSheetItems = [@[FSActionSheetTitleWithImageItemMake(FSActi
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
                                         mutableCopy];
-    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:nil cancelTitle:@"关闭" items:actionSheetItems];
-    actionSheet.contentAlignment = FSContentAlignmentLeft;
-    // 展示并绑定选择回调
-    [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
-        FSActionSheetItem *item = actionSheetItems[selectedIndex];
-        _label.text = item.title;
-    }];
+FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:nil cancelTitle:@"关闭" items:actionSheetItems];
+actionSheet.contentAlignment = FSContentAlignmentLeft;
+// 展示并绑定选择回调
+[actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
+	FSActionSheetItem *item = actionSheetItems[selectedIndex];	_label.text = item.title;
+}];
 ```
