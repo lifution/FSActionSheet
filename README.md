@@ -1,5 +1,5 @@
 # FSActionSheet
-模仿微信底部ActionSheet, 支持横屏显示.<p>
+模仿微信底部ActionSheet, 支持横屏显示.(支持iOS6及往后版本)<p>
 按钮如果过多则默认显示为屏幕高度的默认比例, 然后按钮支持滑动, 否则不支持滑动按钮.<p>
 几种效果样式如图:<p>
 ![Example screenshot](https://raw.githubusercontent.com/lifution/TestImages/master/FSActionSheetShot/ScreenShot.jpg)<p>
