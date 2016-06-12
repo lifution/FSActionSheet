@@ -42,23 +42,45 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     NSLog(@"-- FSActionSheet did dealloc -- [%p] -- [%p] -- [%p]", _window, _backView, _tableView);
 }
 
+/*! @brief 单文本选项快速初始化 */
+- (instancetype)initWithTitle:(NSString *)title delegate:(id<FSActionSheetDelegate>)delegate cancelButtonTitle:(NSString *)cancelButtonTitle highlightedButtonTitle:(NSString *)highlightedButtonTitle otherButtonTitles:(NSArray<NSString *> *)otherButtonTitles {
+    if (!(self = [super init])) return nil;
+    
+    [self baseSetting];
+    
+    NSMutableArray *titleItems = [@[] mutableCopy];
+    // 普通按钮
+    for (NSString *otherTitle in otherButtonTitles) {
+        if (otherTitle && otherTitle.length > 0) {
+            [titleItems addObject:FSActionSheetTitleItemMake(FSActionSheetTypeNormal, otherTitle)];
+        }
+    }
+    // 高亮按钮, 高亮按钮放在最下面.
+    if (highlightedButtonTitle && highlightedButtonTitle.length > 0) {
+        [titleItems addObject:FSActionSheetTitleItemMake(FSActionSheetTypeHighlighted, highlightedButtonTitle)];
+    }
+    
+    self.title = title?:@"";
+    self.delegate = delegate;
+    self.cancelTitle = (cancelButtonTitle && cancelButtonTitle.length != 0)?cancelButtonTitle:@"取消";
+    self.items = titleItems;
+    
+    [self addSubview:self.tableView];
+    
+    return self;
+}
+
+/*! @brief 在外部组装选项按钮item */
 - (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle items:(NSArray<FSActionSheetItem *> *)items {
     if (!(self = [super init])) return nil;
     
-    _contentAlignment = FSContentAlignmentCenter; // 默认样式为居中
-    _hideOnTouchOutside = YES; // 默认点击半透明层隐藏弹窗
+    [self baseSetting];
     
     self.title = title?:@"";
     self.cancelTitle = (cancelTitle && cancelTitle.length != 0)?cancelTitle:@"取消";
     self.items = items?:@[];
     
-    self.backgroundColor = FSColorWithString(FSActionSheetBackColor);
-    self.translatesAutoresizingMaskIntoConstraints = NO; // 允许约束
-    
     [self addSubview:self.tableView];
-    
-    // 监听屏幕旋转
-    [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationDidChange:) name:UIDeviceOrientationDidChangeNotification  object:nil];
     
     return self;
 }
@@ -66,6 +88,18 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.tableView.frame = self.bounds;
+}
+
+// 默认设置
+- (void)baseSetting {
+    self.backgroundColor = FSColorWithString(FSActionSheetBackColor);
+    self.translatesAutoresizingMaskIntoConstraints = NO; // 允许约束
+    
+    _contentAlignment = FSContentAlignmentCenter; // 默认样式为居中
+    _hideOnTouchOutside = YES; // 默认点击半透明层隐藏弹窗
+    
+    // 监听屏幕旋转
+    [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationDidChange:) name:UIDeviceOrientationDidChangeNotification  object:nil];
 }
 
 // 屏幕旋转通知回调
@@ -180,7 +214,12 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 #pragma mark - public
-// 绑定block回调并弹出显示
+/*! @brief 单展示, 不绑定block回调 */
+- (void)show {
+    [self showWithSelectedCompletion:NULL];
+}
+
+/*! @brief 展示并绑定block回调 */
 - (void)showWithSelectedCompletion:(FSActionSheetHandler)selectedHandler {
     self.selectedHandler = selectedHandler;
     
@@ -338,9 +377,15 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // 延迟0.1秒隐藏让用户既看到点击效果又不影响体验
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1*NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        __weak __typeof(&*self)weakSelf = self;
         [self hideWithCompletion:^{
-            if (indexPath.section == 0 && _selectedHandler) {
-                _selectedHandler(indexPath.row);
+            if (indexPath.section == 0) {
+                if (_selectedHandler) {
+                    _selectedHandler(indexPath.row);
+                }
+                if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(FSActionSheet:selectedIndex:)]) {
+                    [weakSelf.delegate FSActionSheet:self selectedIndex:indexPath.row];
+                }
             }
         }];
     });

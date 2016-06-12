@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "FSActionSheet.h"
 
-@interface ViewController ()
+@interface ViewController () <FSActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UILabel *label;
@@ -147,16 +147,11 @@
 
 // 单文本带标题内容偏左
 - (void)textWithTitleAlignmentLeft {
-    NSMutableArray *actionSheetItems = [@[FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"拍照"),
-                                          FSActionSheetTitleItemMake(FSActionSheetTypeNormal, @"从相册选取"),
-                                          FSActionSheetTitleItemMake(FSActionSheetTypeHighlighted, @"删除")]
-                                        mutableCopy];
-    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:_actionSheetTitle cancelTitle:nil items:actionSheetItems];
+    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:_actionSheetTitle delegate:self cancelButtonTitle:@"关闭" highlightedButtonTitle:@"删除" otherButtonTitles:@[@"拍照", @"从相册选取"]];
     actionSheet.contentAlignment = FSContentAlignmentLeft;
     // 展示并绑定选择回调
     [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
-        FSActionSheetItem *item = actionSheetItems[selectedIndex];
-        _label.text = item.title;
+        _label.text = [NSString stringWithFormat:@"选择了第[%zi]项", selectedIndex];
     }];
 }
 
@@ -225,15 +220,17 @@
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
                                           FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
                                         mutableCopy];
-    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:_actionSheetTitle cancelTitle:@"关闭" items:actionSheetItems];
+    NSString *title = @"带icon的选项, 内容偏右, icon会被调换到右边, 因为我试过不调换icon到右边的话会丑出一个新高度的. 😂";
+    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:title cancelTitle:@"关闭" items:actionSheetItems];
+    actionSheet.delegate = self;
     actionSheet.contentAlignment = FSContentAlignmentRight;
-    // 展示并绑定选择回调
-    [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
-        FSActionSheetItem *item = actionSheetItems[selectedIndex];
-        _label.text = item.title;
-    }];
+    [actionSheet show];
 }
 
+#pragma mark - FSActionSheetDelegate
+- (void)FSActionSheet:(FSActionSheet *)actionSheet selectedIndex:(NSInteger)selectedIndex {
+    NSLog(@"选择了第[%zi]项", selectedIndex);
+}
 
 @end
 
