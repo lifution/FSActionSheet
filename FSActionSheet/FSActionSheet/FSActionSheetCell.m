@@ -1,9 +1,9 @@
 //
 //  FSActionSheetCell.m
-//  FSatherUp
+//  FSActionSheet
 //
-//  Created by Steven on 16/5/11.
-//  Copyright © 2016年 GatherUp. All rights reserved.
+//  Created by Steven on 6/7/16.
+//  Copyright © 2016年 Steven. All rights reserved.
 //
 
 #import "FSActionSheetCell.h"

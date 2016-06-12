@@ -2,7 +2,7 @@
 //  ViewController.m
 //  FSActionSheet
 //
-//  Created by Steven on 16/5/11.
+//  Created by Steven on 6/7/16.
 //  Copyright © 2016年 Steven. All rights reserved.
 //
 
@@ -147,7 +147,7 @@
 
 // 单文本带标题内容偏左
 - (void)textWithTitleAlignmentLeft {
-    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:_actionSheetTitle delegate:self cancelButtonTitle:@"关闭" highlightedButtonTitle:@"删除" otherButtonTitles:@[@"拍照", @"从相册选取"]];
+    FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:_actionSheetTitle delegate:nil cancelButtonTitle:@"关闭" highlightedButtonTitle:@"删除" otherButtonTitles:@[@"拍照", @"从相册选取"]];
     actionSheet.contentAlignment = FSContentAlignmentLeft;
     // 展示并绑定选择回调
     [actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
@@ -233,14 +233,3 @@
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,9 @@
 //
 //  FSActionSheet.h
-//  FSatherUp
+//  FSActionSheet
 //
-//  Created by Steven on 16/5/10.
-//  Copyright © 2016年 GatherUp. All rights reserved.
+//  Created by Steven on 6/7/16.
+//  Copyright © 2016年 Steven. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -20,7 +20,7 @@
 
 @interface FSActionSheet : UIView
 
-@property (nonatomic, weak) id<FSActionSheetDelegate> delegate;
+@property (nonatomic, weak) id<FSActionSheetDelegate> delegate; ///< 代理对象
 @property (nonatomic, assign) FSContentAlignment contentAlignment; ///< 默认是FSContentAlignmentCenter.
 @property (nonatomic, assign) BOOL hideOnTouchOutside; ///< 是否开启点击半透明层隐藏弹窗, 默认为YES.
 
