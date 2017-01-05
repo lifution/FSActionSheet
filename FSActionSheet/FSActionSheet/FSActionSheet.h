@@ -20,9 +20,10 @@
 
 @interface FSActionSheet : UIView
 
-@property (nonatomic, weak) id<FSActionSheetDelegate> delegate; ///< 代理对象
-@property (nonatomic, assign) FSContentAlignment contentAlignment; ///< 默认是FSContentAlignmentCenter.
-@property (nonatomic, assign) BOOL hideOnTouchOutside; ///< 是否开启点击半透明层隐藏弹窗, 默认为YES.
+@property (  weak, nonatomic) id<FSActionSheetDelegate> delegate;  ///< 代理对象
+@property (assign, nonatomic) FSContentAlignment contentAlignment; ///< 默认是FSContentAlignmentCenter.
+@property (assign, nonatomic) BOOL hideOnTouchOutside; ///< 是否开启点击半透明层隐藏弹窗, 默认为YES.
+@property (strong, nonatomic) UIColor * cancleColor;   //!< 取消item标题颜色
 
 /*! @author Steven
  *  @brief 单文本选项快速初始化
@@ -41,6 +42,7 @@
  *  @param items       选项按钮item
  */
 - (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle items:(NSArray<FSActionSheetItem *> *)items;
+- (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle cancleColor:(UIColor *)cancleColor items:(NSArray<FSActionSheetItem *> *)items;
 
 /*! @author Steven
  *  @brief 单展示, 不绑定block回调

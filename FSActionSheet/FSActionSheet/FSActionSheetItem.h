@@ -16,8 +16,9 @@
 @property (nonatomic, copy)   NSString *title; ///< 选项标题
 @property (nonatomic, strong) UIColor  *tintColor; ///< 选项前景色, 如果设置了这个颜色的话, 则无论选项设置的图标是什么颜色都会被修改为当前设置的这个颜色,
                                                    ///< 同时这个颜色也会是标题的文本颜色.
-
+@property (strong, nonatomic) UIColor * titleColor; //!< 选项标题颜色
 + (instancetype)itemWithType:(FSActionSheetType)type image:(UIImage *)image title:(NSString *)title tintColor:(UIColor *)tintColor;
++ (instancetype)itemWithType:(FSActionSheetType)type image:(UIImage *)image title:(NSString *)title tintColor:(UIColor *)tintColor titleColor:(UIColor *)titleColor;
 
 @end
 
@@ -30,6 +31,10 @@ NS_INLINE FSActionSheetItem *FSActionSheetTitleItemMake(FSActionSheetType type, 
     return [FSActionSheetItem itemWithType:type image:nil title:title tintColor:nil];
 }
 
+NS_INLINE FSActionSheetItem *FSActionSheetTitleItemMake_(FSActionSheetType type, NSString *title, UIColor *titleColor) {
+    return [FSActionSheetItem itemWithType:type image:nil title:title tintColor:nil titleColor:titleColor];
+}
+
 /*! @author Steven
  *  @brief 标题和图标的选项
  *  @param type  类型
@@ -38,6 +43,10 @@ NS_INLINE FSActionSheetItem *FSActionSheetTitleItemMake(FSActionSheetType type, 
  */
 NS_INLINE FSActionSheetItem *FSActionSheetTitleWithImageItemMake(FSActionSheetType type, UIImage *image, NSString *title) {
     return [FSActionSheetItem itemWithType:type image:image title:title tintColor:nil];
+}
+
+NS_INLINE FSActionSheetItem *FSActionSheetTitleWithImageItemMake_(FSActionSheetType type, UIImage *image, NSString *title, UIColor *titleColor) {
+    return [FSActionSheetItem itemWithType:type image:image title:title tintColor:nil titleColor:titleColor];
 }
 
 /*! @author Steven
@@ -50,6 +59,10 @@ NS_INLINE FSActionSheetItem *FSActionSheetTitleWithColorItemMake(FSActionSheetTy
     return [FSActionSheetItem itemWithType:type image:nil title:title tintColor:tintColor];
 }
 
+NS_INLINE FSActionSheetItem *FSActionSheetTitleWithColorItemMake_(FSActionSheetType type, NSString *title, UIColor *tintColor, UIColor *titleColor) {
+    return [FSActionSheetItem itemWithType:type image:nil title:title tintColor:tintColor titleColor:titleColor];
+}
+
 /*! @author Steven
  *  @brief 标题和图片并且自定义前景色的选项
  *  @param type  类型
@@ -59,6 +72,10 @@ NS_INLINE FSActionSheetItem *FSActionSheetTitleWithColorItemMake(FSActionSheetTy
  */
 NS_INLINE FSActionSheetItem *FSActionSheetItemMake(FSActionSheetType type, UIImage *image, NSString *title, UIColor *tintColor) {
     return [FSActionSheetItem itemWithType:type image:image title:title tintColor:tintColor];
+}
+
+NS_INLINE FSActionSheetItem *FSActionSheetItemMake_(FSActionSheetType type, UIImage *image, NSString *title, UIColor *tintColor, UIColor *titleColor) {
+    return [FSActionSheetItem itemWithType:type image:image title:title tintColor:tintColor titleColor:titleColor];
 }
 
 

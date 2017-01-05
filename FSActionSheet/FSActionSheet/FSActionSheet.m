@@ -71,30 +71,35 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 /*! @brief 在外部组装选项按钮item */
-- (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle items:(NSArray<FSActionSheetItem *> *)items {
-    if (!(self = [super init])) return nil;
-    
-    [self baseSetting];
-    
-    self.title = title?:@"";
-    self.cancelTitle = (cancelTitle && cancelTitle.length != 0)?cancelTitle:@"取消";
-    self.items = items?:@[];
-    
-    [self addSubview:self.tableView];
-    
+- (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle items:(NSArray<FSActionSheetItem *> *)items
+{
+    return [self initWithTitle:title cancelTitle:cancelTitle cancleColor:nil items:items];
+}
+
+- (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle cancleColor:(UIColor *)cancleColor items:(NSArray<FSActionSheetItem *> *)items
+{
+    if (self = [super init]) {
+        [self baseSetting];
+        self.title = title?:@"";
+        self.cancelTitle = (cancelTitle && cancelTitle.length != 0)?cancelTitle:@"取消";
+        self.items = items?:@[];
+        if (cancleColor) self.cancleColor = cancleColor;
+        [self addSubview:self.tableView];
+    }
     return self;
 }
 
-- (void)layoutSubviews {
+- (void)layoutSubviews
+{
     [super layoutSubviews];
     self.tableView.frame = self.bounds;
 }
 
 // 默认设置
-- (void)baseSetting {
+- (void)baseSetting
+{
     self.backgroundColor = FSColorWithString(FSActionSheetBackColor);
     self.translatesAutoresizingMaskIntoConstraints = NO; // 允许约束
-    
     _contentAlignment = FSContentAlignmentCenter; // 默认样式为居中
     _hideOnTouchOutside = YES; // 默认点击半透明层隐藏弹窗
     
@@ -333,6 +338,12 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     }
 }
 
+@synthesize cancleColor = _cancleColor;
+- (void)setCancleColor:(UIColor *)cancleColor
+{
+    _cancleColor = cancleColor;
+}
+
 #pragma mark - delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
@@ -369,6 +380,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
                 break;
             }
         }
+        // 看看外界是否有传递自定义取消item的颜色
+        if (self.cancleColor) cancelItem.titleColor = self.cancleColor;
         sheetCell.item = cancelItem;
         sheetCell.hideTopLine = YES;
     }
