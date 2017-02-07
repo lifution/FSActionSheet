@@ -92,7 +92,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 // 默认设置
 - (void)baseSetting {
-    self.backgroundColor = FSColorWithString(FSActionSheetBackColor);
+    self.backgroundColor = FSActionSheetColorWithString(FSActionSheetBackColor);
     self.translatesAutoresizingMaskIntoConstraints = NO; // 允许约束
     
     _contentAlignment = FSContentAlignmentCenter; // 默认样式为居中
@@ -155,7 +155,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     // 富文本相关配置
     NSRange  attributeRange = NSMakeRange(0, _title.length);
     UIFont  *titleFont      = [UIFont systemFontOfSize:14];
-    UIColor *titleTextColor = FSColorWithString(FSActionSheetTitleColor);
+    UIColor *titleTextColor = FSActionSheetColorWithString(FSActionSheetTitleColor);
     CGFloat  lineSpacing = FSActionSheetTitleLineSpacing;
     CGFloat  kernSpacing = FSActionSheetTitleKernSpacing;
     
@@ -300,7 +300,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 // tableHeaderView作为title部分
 - (UIView *)headerView {
     UIView *headerView = [[UIView alloc] init];
-    headerView.backgroundColor = FSColorWithString(FSActionSheetRowNormalColor);
+    headerView.backgroundColor = FSActionSheetColorWithString(FSActionSheetRowNormalColor);
     
     // 标题
     UILabel *titleLabel = [[UILabel alloc] init];
