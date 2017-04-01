@@ -20,14 +20,15 @@
 // 自己组装item设定为actionSheet的按钮
 - (void)show {
 	NSMutableArray *actionSheetItems = [@[FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"camera"], @"拍照"),
-                                   	    FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
-                                      	 FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
+                                   	      FSActionSheetTitleWithImageItemMake(FSActionSheetTypeNormal, [UIImage imageNamed:@"album"], @"从相册选取"),
+                                      	  FSActionSheetTitleWithImageItemMake(FSActionSheetTypeHighlighted, [UIImage imageNamed:@"delete"], @"删除")]
                                     	   mutableCopy];
 	FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:nil cancelTitle:@"关闭" items:actionSheetItems];
 	actionSheet.contentAlignment = FSContentAlignmentLeft;
 	// 展示并绑定选择回调
 	[actionSheet showWithSelectedCompletion:^(NSInteger selectedIndex) {
-		FSActionSheetItem *item = actionSheetItems[selectedIndex];		_label.text = item.title;
+		FSActionSheetItem *item = actionSheetItems[selectedIndex];		
+		_label.text = item.title;
 	}];
 }
 ```
