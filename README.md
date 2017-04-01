@@ -4,7 +4,7 @@
 几种效果样式如图:<p>
 ![Example screenshot](https://raw.githubusercontent.com/lifution/TestImages/master/FSActionSheetShot/ScreenShot.jpg)<p>
 <P>
-```Objective-C
+```ruby
 // 类UIActionSheet初始化绑定代理和设置标题
 - (void)show {
 	FSActionSheet *actionSheet = [[FSActionSheet alloc] initWithTitle:@"这是ActionSheet的标题" delegate:self cancelButtonTitle:@"关闭" highlightedButtonTitle:@"删除" otherButtonTitles:@[@"拍照", @"从相册选取"]];
@@ -29,5 +29,5 @@
 		FSActionSheetItem *item = actionSheetItems[selectedIndex];		_label.text = item.title;
 	}];
 }
-
 ```
+
