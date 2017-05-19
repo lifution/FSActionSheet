@@ -18,7 +18,8 @@ CGFloat const kFSActionSheetSectionHeight = 10; ///< 分区间距
 @property (nonatomic, copy) NSArray<FSActionSheetItem *> *items;
 @property (nonatomic, copy) FSActionSheetHandler selectedHandler;
 
-@property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) UIWindow *popupWindow;
+@property (nonatomic, weak)   UIViewController *popupVC;
 @property (nonatomic, weak)   UIView *controllerView;
 @property (nonatomic, strong) UIView *backView;
 @property (nonatomic, strong) UITableView *tableView;
@@ -39,7 +40,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    NSLog(@"-- FSActionSheet did dealloc -- [%p] -- [%p] -- [%p]", _window, _backView, _tableView);
+    NSLog(@"-- FSActionSheet did dealloc -- [%p] -- [%p] -- [%p]", _popupWindow, _backView, _tableView);
 }
 
 /*! @brief 单文本选项快速初始化 */
@@ -104,6 +105,9 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 // 屏幕旋转通知回调
 - (void)orientationDidChange:(NSNotification *)notification {
+    
+    printf("\n%s\n", [NSString stringWithFormat:@"%@", NSStringFromCGRect([UIScreen mainScreen].bounds)].UTF8String);
+    
     if (_title.length > 0) {
         // 更新头部标题的高度
         CGFloat newHeaderHeight = [self heightForHeaderView];
@@ -119,7 +123,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 #pragma mark - private
 // 计算title在设定宽度下的富文本高度
 - (CGFloat)heightForHeaderView {
-    CGFloat labelHeight = [_titleLabel.attributedText boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.window.frame)-FSActionSheetDefaultMargin*2, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil].size.height;
+    CGFloat labelHeight = [_titleLabel.attributedText boundingRectWithSize:CGSizeMake([self currentScreenWidth] - FSActionSheetDefaultMargin*2, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil].size.height;
     CGFloat headerHeight = ceil(labelHeight)+FSActionSheetDefaultMargin*2;
     
     return headerHeight;
@@ -136,7 +140,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 // 适配屏幕高度, 弹出窗高度不应该高于屏幕的设定比例
 - (void)fixContentHeight {
-    CGFloat contentMaxHeight = CGRectGetHeight(self.window.frame)*FSActionSheetContentMaxScale;
+    CGFloat contentMaxHeight = [self currentScreenHeight] * FSActionSheetContentMaxScale;
     CGFloat contentHeight = [self contentHeight];
     if (contentHeight > contentMaxHeight) {
         contentHeight = contentMaxHeight;
@@ -146,6 +150,42 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     }
     
     _heightConstraint.constant = contentHeight;
+}
+
+/// 屏幕当前宽度
+- (CGFloat)currentScreenWidth {
+    CGFloat currentScreenWidth;
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat screenWidth = fmin(screenSize.width, screenSize.height);  // 该值为屏幕竖屏下的屏幕宽度
+    CGFloat screenHeight = fmax(screenSize.width, screenSize.height); // 该值为屏幕竖屏下的屏幕高度
+    // 判断屏幕方向
+    UIInterfaceOrientation orientation = [_popupVC preferredInterfaceOrientationForPresentation];
+    // 横屏
+    if (orientation == UIInterfaceOrientationLandscapeLeft  || orientation == UIInterfaceOrientationLandscapeRight) {
+        currentScreenWidth = screenHeight;
+    } else {
+        currentScreenWidth = screenWidth;
+    }
+    
+    return currentScreenWidth;
+}
+
+/// 屏幕当前高度
+- (CGFloat)currentScreenHeight {
+    CGFloat currentScreenHeight;
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat screenWidth = fmin(screenSize.width, screenSize.height);  // 该值为屏幕竖屏下的屏幕宽度
+    CGFloat screenHeight = fmax(screenSize.width, screenSize.height); // 该值为屏幕竖屏下的屏幕高度
+    // 判断屏幕方向
+    UIInterfaceOrientation orientation = [_popupVC preferredInterfaceOrientationForPresentation];
+    // 横屏
+    if (orientation == UIInterfaceOrientationLandscapeLeft  || orientation == UIInterfaceOrientationLandscapeRight) {
+        currentScreenHeight = screenWidth;
+    } else {
+        currentScreenHeight = screenHeight;
+    }
+    
+    return currentScreenHeight;
 }
 
 // 适配标题偏移方向
@@ -208,7 +248,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
         [_tableView removeFromSuperview];
         _tableView = nil;
         [self removeFromSuperview];
-        self.window = nil;
+        self.popupWindow = nil;
         self.selectedHandler = nil;
     }];
 }
@@ -237,7 +277,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     // 内容高度
     CGFloat contentHeight = self.tableView.contentSize.height;
     // 适配屏幕高度
-    CGFloat contentMaxHeight = CGRectGetHeight(self.window.frame)*FSActionSheetContentMaxScale;
+    CGFloat contentMaxHeight = CGRectGetHeight(self.popupWindow.frame)*FSActionSheetContentMaxScale;
     if (contentHeight > contentMaxHeight) {
         self.tableView.scrollEnabled = YES;
         contentHeight = contentMaxHeight;
@@ -250,7 +290,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     CGFloat selfY = CGRectGetMaxY(_controllerView.frame);
     self.frame = CGRectMake(selfX, selfY, selfW, selfH);
     
-    [self.window makeKeyAndVisible];
+    [self.popupWindow makeKeyAndVisible];
     
     [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         _backView.alpha   = 0.38;
@@ -267,15 +307,16 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 #pragma mark - getter
-- (UIWindow *)window {
-    if (_window) return _window;
+- (UIWindow *)popupWindow {
+    if (_popupWindow) return _popupWindow;
     
-    _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    _window.windowLevel = UIWindowLevelStatusBar+1;
-    _window.rootViewController = [[UIViewController alloc] init];
-    self.controllerView = _window.rootViewController.view;
+    _popupWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _popupWindow.windowLevel = UIWindowLevelStatusBar+1;
+    _popupWindow.rootViewController = [[UIViewController alloc] init];
+    _popupVC = _popupWindow.rootViewController;
+    _controllerView = _popupVC.view;
     
-    return _window;
+    return _popupWindow;
 }
 - (UITableView *)tableView {
     if (_tableView) return _tableView;
@@ -316,11 +357,17 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     CGFloat labelMargin = FSActionSheetDefaultMargin;
     // 计算内容高度
     CGFloat headerHeight = [self heightForHeaderView];
-    headerView.frame = CGRectMake(0, 0, CGRectGetWidth(self.window.frame), headerHeight);
+    headerView.frame = CGRectMake(0, 0, CGRectGetWidth(self.popupWindow.frame), headerHeight);
     
     // titleLabel constraint
-    [headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-labelMargin-[titleLabel]-labelMargin-|" options:0 metrics:@{@"labelMargin":@(labelMargin)} views:NSDictionaryOfVariableBindings(titleLabel)]];
-    [headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-labelMargin-[titleLabel]" options:0 metrics:@{@"labelMargin":@(labelMargin)} views:NSDictionaryOfVariableBindings(titleLabel)]];
+    [headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-labelMargin-[titleLabel]-labelMargin-|"
+                                                                       options:0.0
+                                                                       metrics:@{@"labelMargin" : @(labelMargin)}
+                                                                         views:NSDictionaryOfVariableBindings(titleLabel)]];
+    [headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-labelMargin-[titleLabel]"
+                                                                       options:0.0
+                                                                       metrics:@{@"labelMargin" : @(labelMargin)}
+                                                                         views:NSDictionaryOfVariableBindings(titleLabel)]];
     
     return headerView;
 }
