@@ -24,17 +24,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    if ([UIScreen mainScreen].scale == 3) {
-        _imageView.image = [UIImage imageNamed:@"background_image@3x.jpg"];
-    } else {
-        _imageView.image = [UIImage imageNamed:@"background_image@2x.jpg"];
-    }
+    _imageView.image = [UIImage imageNamed:@"background_image@2x.jpg"];
+    
     _tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.tableFooterView = UIView.new;
     _tableView.separatorColor = [UIColor whiteColor];
     
-    _actionSheetTitle = @"这是一个模仿微信底部ActionSheet风格的ActionSheet, 如果你对FSActionSheet有更好的建议或者发现Bug的话可以在Github上issue, 也可以直接联系我QQ: 1101344793, Thx.";
+    _actionSheetTitle = @"这是一个模仿微信底部ActionSheet风格的ActionSheet, 如果你对FSActionSheet有更好的建议或者发现Bug的话可以在Github上issue, Thx.";
 }
 
 #pragma mark - delegate

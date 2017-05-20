@@ -39,15 +39,13 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    NSLog(@"-- FSActionSheet did dealloc -- [%p] -- [%p] -- [%p]", _popupWindow, _backView, _tableView);
 }
 
 /*! @brief 单文本选项快速初始化 */
 - (instancetype)initWithTitle:(NSString *)title delegate:(id<FSActionSheetDelegate>)delegate cancelButtonTitle:(NSString *)cancelButtonTitle highlightedButtonTitle:(NSString *)highlightedButtonTitle otherButtonTitles:(NSArray<NSString *> *)otherButtonTitles {
     if (!(self = [super init])) return nil;
     
-    [self baseSetting];
+    [self commonInit];
     
     NSMutableArray *titleItems = [@[] mutableCopy];
     // 普通按钮
@@ -75,7 +73,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 - (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle items:(NSArray<FSActionSheetItem *> *)items {
     if (!(self = [super init])) return nil;
     
-    [self baseSetting];
+    [self commonInit];
     
     self.title = title?:@"";
     self.cancelTitle = (cancelTitle && cancelTitle.length != 0)?cancelTitle:@"取消";
@@ -92,12 +90,14 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 // 默认设置
-- (void)baseSetting {
+- (void)commonInit {
     self.backgroundColor = FSActionSheetColorWithString(FSActionSheetBackColor);
     self.translatesAutoresizingMaskIntoConstraints = NO; // 允许约束
     
     _contentAlignment = FSContentAlignmentCenter; // 默认样式为居中
     _hideOnTouchOutside = YES; // 默认点击半透明层隐藏弹窗
+    
+    self.popupWindow.bounds = [UIScreen mainScreen].bounds;
     
     // 监听屏幕旋转
     [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationDidChange:) name:UIDeviceOrientationDidChangeNotification  object:nil];
@@ -105,9 +105,6 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 // 屏幕旋转通知回调
 - (void)orientationDidChange:(NSNotification *)notification {
-    
-    printf("\n%s\n", [NSString stringWithFormat:@"%@", NSStringFromCGRect([UIScreen mainScreen].bounds)].UTF8String);
-    
     if (_title.length > 0) {
         // 更新头部标题的高度
         CGFloat newHeaderHeight = [self heightForHeaderView];
