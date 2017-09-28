@@ -11,5 +11,6 @@ Pod::Spec.new do |s|
 	}
 	s.requires_arc = true
 	s.platform = :ios, "6.0"
-	s.source_files = "FSTextView/*", "*.{h,m}"
+	s.resource = 'FSActionSheet/FSActionSheet/FSActionSheetResources/*'
+	s.source_files = "FSActionSheet/FSActionSheet/*", "*.{h,m}"
 end
