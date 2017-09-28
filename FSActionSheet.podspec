@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
 	s.homepage = "https://github.com/lifution/FSActionSheet"
 	s.author = { "Allen" => "https://github.com/lifution" }
 	s.source = { 
-		:git => "git@github.com:lifution/FSActionSheet.git", 
+		:git => "https://github.com/lifution/FSActionSheet.git", 
 		:tag => s.version 
 	}
 	s.requires_arc = true
