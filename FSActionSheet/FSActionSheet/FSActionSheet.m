@@ -33,16 +33,19 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 @implementation FSActionSheet
 
-- (instancetype)init {
+- (instancetype)init
+{
     return [self initWithTitle:nil cancelTitle:nil items:nil];
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /*! @brief 单文本选项快速初始化 */
-- (instancetype)initWithTitle:(NSString *)title delegate:(id<FSActionSheetDelegate>)delegate cancelButtonTitle:(NSString *)cancelButtonTitle highlightedButtonTitle:(NSString *)highlightedButtonTitle otherButtonTitles:(NSArray<NSString *> *)otherButtonTitles {
+- (instancetype)initWithTitle:(NSString *)title delegate:(id<FSActionSheetDelegate>)delegate cancelButtonTitle:(NSString *)cancelButtonTitle highlightedButtonTitle:(NSString *)highlightedButtonTitle otherButtonTitles:(NSArray<NSString *> *)otherButtonTitles
+{
     if (!(self = [super init])) return nil;
     
     [self commonInit];
@@ -70,7 +73,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 /*! @brief 在外部组装选项按钮item */
-- (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle items:(NSArray<FSActionSheetItem *> *)items {
+- (instancetype)initWithTitle:(NSString *)title cancelTitle:(NSString *)cancelTitle items:(NSArray<FSActionSheetItem *> *)items
+{
     if (!(self = [super init])) return nil;
     
     [self commonInit];
@@ -84,13 +88,15 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     return self;
 }
 
-- (void)layoutSubviews {
+- (void)layoutSubviews
+{
     [super layoutSubviews];
     self.tableView.frame = self.bounds;
 }
 
 // 默认设置
-- (void)commonInit {
+- (void)commonInit
+{
     self.backgroundColor = FSActionSheetColorWithString(FSActionSheetBackColor);
     self.translatesAutoresizingMaskIntoConstraints = NO; // 允许约束
     
@@ -104,7 +110,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 // 屏幕旋转通知回调
-- (void)orientationDidChange:(NSNotification *)notification {
+- (void)orientationDidChange:(NSNotification *)notification
+{
     if (_title.length > 0) {
         // 更新头部标题的高度
         CGFloat newHeaderHeight = [self heightForHeaderView];
@@ -119,7 +126,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 #pragma mark - private
 // 计算title在设定宽度下的富文本高度
-- (CGFloat)heightForHeaderView {
+- (CGFloat)heightForHeaderView
+{
     CGFloat labelHeight = [_titleLabel.attributedText boundingRectWithSize:CGSizeMake([self currentScreenWidth] - FSActionSheetDefaultMargin*2, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil].size.height;
     CGFloat headerHeight = ceil(labelHeight)+FSActionSheetDefaultMargin*2;
     
@@ -127,7 +135,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 // 整个弹窗内容的高度
-- (CGFloat)contentHeight {
+- (CGFloat)contentHeight
+{
     CGFloat titleHeight = (_title.length > 0)?[self heightForHeaderView]:0;
     CGFloat rowHeightSum = (_items.count+1)*FSActionSheetRowHeight+kFSActionSheetSectionHeight;
     CGFloat contentHeight = titleHeight+rowHeightSum;
@@ -136,7 +145,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 // 适配屏幕高度, 弹出窗高度不应该高于屏幕的设定比例
-- (void)fixContentHeight {
+- (void)fixContentHeight
+{
     CGFloat contentMaxHeight = [self currentScreenHeight] * FSActionSheetContentMaxScale;
     CGFloat contentHeight = [self contentHeight];
     if (contentHeight > contentMaxHeight) {
@@ -150,7 +160,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 /// 屏幕当前宽度
-- (CGFloat)currentScreenWidth {
+- (CGFloat)currentScreenWidth
+{
     CGFloat currentScreenWidth;
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
     CGFloat screenWidth = fmin(screenSize.width, screenSize.height);  // 该值为屏幕竖屏下的屏幕宽度
@@ -168,7 +179,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 /// 屏幕当前高度
-- (CGFloat)currentScreenHeight {
+- (CGFloat)currentScreenHeight
+{
     CGFloat currentScreenHeight;
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
     CGFloat screenWidth = fmin(screenSize.width, screenSize.height);  // 该值为屏幕竖屏下的屏幕宽度
@@ -186,7 +198,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 // 适配标题偏移方向
-- (void)updateTitleAttributeText {
+- (void)updateTitleAttributeText
+{
     if (_title.length == 0 || !_titleLabel) return;
     
     // 富文本相关配置
@@ -226,12 +239,14 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 // 点击背景半透明遮罩层隐藏
-- (void)backViewGesture {
+- (void)backViewGesture
+{
     [self hideWithCompletion:nil];
 }
 
 // 隐藏
-- (void)hideWithCompletion:(void(^)())completion {
+- (void)hideWithCompletion:(void(^)())completion
+{
     [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         _backView.alpha   = 0;
         CGRect newFrame   = self.frame;
@@ -252,12 +267,14 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 
 #pragma mark - public
 /*! @brief 单展示, 不绑定block回调 */
-- (void)show {
+- (void)show
+{
     [self showWithSelectedCompletion:NULL];
 }
 
 /*! @brief 展示并绑定block回调 */
-- (void)showWithSelectedCompletion:(FSActionSheetHandler)selectedHandler {
+- (void)showWithSelectedCompletion:(FSActionSheetHandler)selectedHandler
+{
     self.selectedHandler = selectedHandler;
     
     _backView = [[UIView alloc] init];
@@ -304,7 +321,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 #pragma mark - getter
-- (UIWindow *)popupWindow {
+- (UIWindow *)popupWindow
+{
     if (_popupWindow) return _popupWindow;
     
     _popupWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -315,7 +333,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     
     return _popupWindow;
 }
-- (UITableView *)tableView {
+- (UITableView *)tableView
+{
     if (_tableView) return _tableView;
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -325,6 +344,12 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     _tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
     _tableView.backgroundColor = self.backgroundColor;
     _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    if (@available(iOS 7.0, *)) {
+        _tableView.estimatedRowHeight = 0.0;
+        _tableView.estimatedSectionHeaderHeight = 0.0;
+        _tableView.estimatedSectionFooterHeight = 0.0;
+    }
     
     [_tableView registerClass:[FSActionSheetCell class] forCellReuseIdentifier:kFSActionSheetCellIdentifier];
     
@@ -336,7 +361,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 // tableHeaderView作为title部分
-- (UIView *)headerView {
+- (UIView *)headerView
+{
     UIView *headerView = [[UIView alloc] init];
     headerView.backgroundColor = FSActionSheetColorWithString(FSActionSheetRowNormalColor);
     
@@ -370,7 +396,8 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 #pragma mark - setter
-- (void)setContentAlignment:(FSContentAlignment)contentAlignment {
+- (void)setContentAlignment:(FSContentAlignment)contentAlignment
+{
     if (_contentAlignment != contentAlignment) {
         _contentAlignment = contentAlignment;
         [self updateTitleAttributeText];
@@ -378,23 +405,33 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
 }
 
 #pragma mark - delegate
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
     return 2;
 }
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     return (section == 1)?1:_items.count;
 }
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return FSActionSheetRowHeight;
 }
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
     return (section == 1)?kFSActionSheetSectionHeight:CGFLOAT_MIN;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     FSActionSheetCell *cell = [tableView dequeueReusableCellWithIdentifier:kFSActionSheetCellIdentifier];
     return cell;
 }
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
     FSActionSheetCell *sheetCell = (FSActionSheetCell *)cell;
     if (indexPath.section == 0) {
         sheetCell.item = _items[indexPath.row];
@@ -418,7 +455,19 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     }
     sheetCell.contentAlignment = _contentAlignment;
 }
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return nil;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    return nil;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     // 延迟0.1秒隐藏让用户既看到点击效果又不影响体验
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1*NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         __weak __typeof(&*self)weakSelf = self;
