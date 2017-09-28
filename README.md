@@ -1,7 +1,14 @@
 # FSActionSheet
 模仿微信底部ActionSheet, 支持横屏显示.(支持iOS6及往后版本)<p>
-按钮如果过多则默认显示为屏幕高度的默认比例, 然后按钮支持滑动, 否则不支持滑动按钮.<p>
-几种效果样式如图:<p>
+按钮如果过多则默认显示为屏幕高度的默认比例, 然后按钮支持滑动, 否则不支持滑动按钮.
+
+支持使用cocoapods引入:
+
+```swif
+pod 'FSActionSheet'
+```
+
+几种效果样式如图:
 ![Example screenshot](https://raw.githubusercontent.com/lifution/TestImages/master/FSActionSheetShot/ScreenShot.jpg)<p>
 <P>
 
@@ -35,4 +42,4 @@
 
 # LICENSE
 
-FSActionSheet is available under the MIT license. See the LICENSE file for more info.
+FSActionSheet 基于 MIT 协议开源. 更多开源信息请查看 LICENSE 文件.
