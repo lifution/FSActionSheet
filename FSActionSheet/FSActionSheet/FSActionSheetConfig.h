@@ -99,5 +99,17 @@ NS_INLINE UIColor *FSActionSheetColorWithString(NSString *aColorString) {
     return nil;
 }
 
+NS_INLINE CGFloat FSActionSheetLandscapeBottomHeight() {
+    if ([UIScreen mainScreen].bounds.size.width == 812 && [UIScreen mainScreen].bounds.size.height == 375) {
+        return 21;
+    }
+    return 0;
+}
 
+NS_INLINE CGFloat FSActionSheetPortraitBottomHeight() {
+    if ([UIScreen mainScreen].bounds.size.width == 375 && [UIScreen mainScreen].bounds.size.height == 812) {
+        return 34;
+    }
+    return 0;
+}
 

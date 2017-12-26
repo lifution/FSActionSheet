@@ -119,9 +119,10 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
         newHeaderRect.size.height = newHeaderHeight;
         _tableView.tableHeaderView.frame = newHeaderRect;
         self.tableView.tableHeaderView = self.tableView.tableHeaderView;
-        // 适配当前内容高度
-        [self fixContentHeight];
     }
+
+    // 适配当前内容高度
+    [self fixContentHeight];
 }
 
 #pragma mark - private
@@ -155,8 +156,16 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     } else {
         self.tableView.scrollEnabled = NO;
     }
-    
-    _heightConstraint.constant = contentHeight;
+
+    // 判断屏幕方向
+    UIInterfaceOrientation orientation = [_popupVC preferredInterfaceOrientationForPresentation];
+    CGFloat bottomHeight = 0;
+    if (orientation == UIInterfaceOrientationLandscapeLeft  || orientation == UIInterfaceOrientationLandscapeRight) {
+        bottomHeight = FSActionSheetLandscapeBottomHeight();
+    } else {
+        bottomHeight = FSActionSheetPortraitBottomHeight();
+    }
+    _heightConstraint.constant = contentHeight+bottomHeight;
 }
 
 /// 屏幕当前宽度
@@ -288,10 +297,18 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     [_controllerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_backView)]];
     
     [self.tableView reloadData];
-    // 内容高度
-    CGFloat contentHeight = self.tableView.contentSize.height;
+
+    // 判断屏幕方向
+    UIInterfaceOrientation orientation = [_popupVC preferredInterfaceOrientationForPresentation];
+    CGFloat bottomHeight = 0;
+    if (orientation == UIInterfaceOrientationLandscapeLeft  || orientation == UIInterfaceOrientationLandscapeRight) {
+        bottomHeight = FSActionSheetLandscapeBottomHeight();
+    } else {
+        bottomHeight = FSActionSheetPortraitBottomHeight();
+    }
+    CGFloat contentHeight = self.tableView.contentSize.height+bottomHeight;
     // 适配屏幕高度
-    CGFloat contentMaxHeight = CGRectGetHeight(self.popupWindow.frame)*FSActionSheetContentMaxScale;
+    CGFloat contentMaxHeight = CGRectGetHeight(self.popupWindow.frame)*FSActionSheetContentMaxScale+bottomHeight;
     if (contentHeight > contentMaxHeight) {
         self.tableView.scrollEnabled = YES;
         contentHeight = contentMaxHeight;
